@@ -1,0 +1,73 @@
+# =========================
+# Залежності (Node.js)
+# =========================
+node_modules/
+.pnp
+.pnp.js
+
+# =========================
+# Логи
+# =========================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# =========================
+# Збірка (Build / Production)
+# =========================
+dist/
+dist-ssr/
+build/
+*.local
+
+# Кеш бандлерів (Vite / Webpack / Turbopack / Nuxt)
+.vite/
+.output/
+.nuxt/
+.cache/
+.temp/
+
+# =========================
+# TypeScript
+# =========================
+*.tsbuildinfo
+
+# =========================
+# Змінні оточення (.env)
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# VS Code
+# =========================
+.vscode/*
+# Дозволити спільні налаштування команди та список рекомендованих розширень:
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# =========================
+# Тестування та покриття (Jest / Vitest / Cypress / Playwright)
+# =========================
+coverage/
+*.lcov
+.nyc_output/
+cypress/videos/
+cypress/screenshots/
+test-results/
+playwright-report/
+
+# =========================
+# Системні файли (OS)
+# =========================
+.DS_Store
+Thumbs.db
+Desktop.ini
