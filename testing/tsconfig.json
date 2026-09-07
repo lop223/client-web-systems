@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",                  /* Цільова версія JavaScript */
+    "module": "NodeNext",                /* Система модулів */
+    "moduleResolution": "NodeNext",      /* Стратегія розпізнавання модулів */
+    "rootDir": "./src",                  /* Папка з вихідним TS кодом */
+    "outDir": "./dist",                  /* Папка для скомпільованого JS коду */
+    "strict": true,                      /* Увімкнення суворого режиму типізації */
+    "esModuleInterop": true,             /* Сумісність CommonJS та ES модулів */
+    "skipLibCheck": true,                /* Пропуск перевірки типів у сторонніх бібліотеках */
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"]                /* Вказує файли для компіляції */
+}
