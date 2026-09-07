@@ -15,9 +15,8 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "removeComments": true,
-    "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     },
 
     "skipLibCheck": true,
