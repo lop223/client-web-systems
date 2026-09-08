@@ -1,13 +1,13 @@
 const PI: number = 3.14 as const;
 
-interface Shape {
+interface IShape {
   getName(): string;
   getArea(): number;
   getPerimeter(): number;
   scale(factor: number): void;
 }
 
-class Rectangle implements Shape {
+class Rectangle implements IShape {
   a: number;
   b: number;
 
@@ -37,7 +37,7 @@ class Rectangle implements Shape {
   }
 }
 
-class Circle implements Shape {
+class Circle implements IShape {
   radius: number;
 
   constructor(radius: number) {
@@ -68,7 +68,7 @@ class Circle implements Shape {
   }
 }
 
-class Triangle implements Shape {
+class Triangle implements IShape {
   a: number;
   b: number;
   c: number;
@@ -105,7 +105,7 @@ class Triangle implements Shape {
   }
 }
 
-const shapes: Array<Shape> = [
+const shapes: Array<IShape> = [
   new Circle(4),
   new Rectangle(3, 5),
   new Triangle(3, 4, 5),
