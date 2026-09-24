@@ -1,0 +1,105 @@
+import { IBook } from './interfaces/IBook';
+
+/**
+ * Модель книги. Не знає нічого про UI чи сховище — лише дані та поведінка,
+ * пов'язана виключно з книгою (getters/setters, позичання/повернення).
+ */
+export class Book implements IBook {
+  private _id: string;
+  private _title: string;
+  private _author: string;
+  private _year: number;
+  private _isBorrowed: boolean;
+  private _borrowedBy: string | null;
+
+  constructor(
+    id: string,
+    title: string,
+    author: string,
+    year: number,
+    isBorrowed = false,
+    borrowedBy: string | null = null,
+  ) {
+    this._id = id;
+    this._title = title;
+    this._author = author;
+    this._year = year;
+    this._isBorrowed = isBorrowed;
+    this._borrowedBy = borrowedBy;
+  }
+
+  get id(): string {
+    return this._id;
+  }
+
+  get title(): string {
+    return this._title;
+  }
+
+  set title(value: string) {
+    this._title = value;
+  }
+
+  get author(): string {
+    return this._author;
+  }
+
+  set author(value: string) {
+    this._author = value;
+  }
+
+  get year(): number {
+    return this._year;
+  }
+
+  set year(value: number) {
+    this._year = value;
+  }
+
+  get isBorrowed(): boolean {
+    return this._isBorrowed;
+  }
+
+  get borrowedBy(): string | null {
+    return this._borrowedBy;
+  }
+
+  /** Позначає книгу як позичену конкретним користувачем. */
+  borrow(userId: string): void {
+    this._isBorrowed = true;
+    this._borrowedBy = userId;
+  }
+
+  /** Повертає книгу — скидає стан позичання. */
+  returnBook(): void {
+    this._isBorrowed = false;
+    this._borrowedBy = null;
+  }
+
+  toString(): string {
+    return `${this._title} by ${this._author} (${this._year})`;
+  }
+
+  /** Серіалізація у простий об'єкт для збереження у LocalStorage. */
+  toJSON(): IBook {
+    return {
+      id: this._id,
+      title: this._title,
+      author: this._author,
+      year: this._year,
+      isBorrowed: this._isBorrowed,
+      borrowedBy: this._borrowedBy,
+    };
+  }
+
+  static fromPlain(plain: IBook): Book {
+    return new Book(
+      plain.id,
+      plain.title,
+      plain.author,
+      plain.year,
+      plain.isBorrowed,
+      plain.borrowedBy,
+    );
+  }
+}
