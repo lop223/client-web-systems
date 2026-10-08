@@ -5,9 +5,14 @@ import BaseModal from '@/components/BaseModal.vue'
 import ParticipantsTable from '@/components/ParticipantsTable.vue'
 import RegisterForm from '@/components/RegisterForm.vue'
 import WinnersBlock from '@/components/WinnersBlock.vue'
-import type { Participant, ParticipantForm } from '@/types/participant'
+import SearchBar from '@/components/SearchBar.vue'
+import type { Participant, ParticipantForm, SortDirection, SortKey } from '@/types/participant'
 
 const MAX_WINNERS = 3
+
+const filterName = ref('')
+const sortKey = ref<SortKey | null>(null)
+const sortDirection = ref<SortDirection>('asc')
 
 const participants = ref<Participant[]>([])
 const winnerIds = ref<number[]>([])
@@ -71,6 +76,35 @@ function confirmDelete(): void {
   removeWinner(id)
   deletingParticipant.value = null
 }
+
+const visibleParticipants = computed<Participant[]>(() => {
+  const query = filterName.value.toLowerCase()
+  // 1. Фільтрація (filter повертає новий масив)
+  const filtered = participants.value.filter((p) => p.name.toLowerCase().includes(query))
+
+  // 2. Сортування (на копії)
+  const key = sortKey.value
+  if (!key) return filtered
+  const factor = sortDirection.value === 'asc' ? 1 : -1
+  return [...filtered].sort((a, b) =>
+    key === 'name'
+      ? a.name.localeCompare(b.name) * factor
+      : a.birthDate.localeCompare(b.birthDate) * factor,
+  )
+})
+
+function setFilter(name: string): void {
+  filterName.value = name
+}
+
+function toggleSort(key: SortKey): void {
+  if (sortKey.value === key) {
+    sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    sortKey.value = key
+    sortDirection.value = 'asc'
+  }
+}
 </script>
 
 <template>
@@ -82,10 +116,14 @@ function confirmDelete(): void {
       @remove-winner="removeWinner"
     />
     <RegisterForm :is-email-taken="isEmailTaken" @submit="addParticipant" />
+    <SearchBar @filter-by-name="setFilter" />
     <ParticipantsTable
-      :participants="participants"
+      :participants="visibleParticipants"
+      :sort-key="sortKey"
+      :sort-direction="sortDirection"
       @edit="editingParticipant = $event"
       @delete="deletingParticipant = $event"
+      @sort="toggleSort"
     />
 
     <!-- Редагування -->
@@ -110,8 +148,9 @@ function confirmDelete(): void {
     <BaseModal :show="deletingParticipant !== null" @close="deletingParticipant = null">
       <template #header>Підтвердження</template>
       <p v-if="deletingParticipant" class="mb-0">
-        Ви дійсно бажаєте видалити учасника "{{ deletingParticipant.name }}",
-        "{{ deletingParticipant.email }}"?
+        Ви дійсно бажаєте видалити учасника "{{ deletingParticipant.name }}", "{{
+          deletingParticipant.email
+        }}"?
       </p>
       <template #footer>
         <BaseButton variant="danger" @click="confirmDelete">Так</BaseButton>

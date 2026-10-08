@@ -1,15 +1,25 @@
 <script setup lang="ts">
 import BaseButton from '@/components/BaseButton.vue'
-import type { Participant } from '@/types/participant'
+import type { Participant, SortDirection, SortKey } from '@/types/participant'
 
 defineProps<{
   participants: Participant[]
+  sortKey: SortKey | null
+  sortDirection: SortDirection
 }>()
 
 const emit = defineEmits<{
   edit: [participant: Participant]
   delete: [participant: Participant]
+  sort: [key: SortKey]
 }>()
+
+function sortIcon(activeKey: SortKey | null, key: SortKey, direction: SortDirection): string {
+  if (activeKey !== key) return 'bi-arrow-down-up'
+  const alpha = key === 'name'
+  if (direction === 'asc') return alpha ? 'bi-sort-alpha-down' : 'bi-sort-numeric-down'
+  return alpha ? 'bi-sort-alpha-up' : 'bi-sort-numeric-up'
+}
 </script>
 
 <template>
@@ -19,8 +29,25 @@ const emit = defineEmits<{
         <thead>
           <tr>
             <th scope="col" class="text-muted">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Date of Birth</th>
+            <th scope="col">
+              <button
+                type="button"
+                class="btn btn-link p-0 text-decoration-none text-reset fw-bold"
+                @click="emit('sort', 'name')"
+              >
+                Name <i class="bi" :class="sortIcon(sortKey, 'name', sortDirection)"></i>
+              </button>
+            </th>
+            <th scope="col">
+              <button
+                type="button"
+                class="btn btn-link p-0 text-decoration-none text-reset fw-bold"
+                @click="emit('sort', 'birthDate')"
+              >
+                Date of Birth
+                <i class="bi" :class="sortIcon(sortKey, 'birthDate', sortDirection)"></i>
+              </button>
+            </th>
             <th scope="col">Email</th>
             <th scope="col">Phone number</th>
             <th scope="col"></th>
