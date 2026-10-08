@@ -1,0 +1,162 @@
+[
+  {
+    "id": 1,
+    "gender": "male",
+    "name": { "title": "Mr", "first": "Ivan", "last": "Petrenko" },
+    "location": {
+      "street": { "number": 12, "name": "Shevchenka St" },
+      "city": "Chernivtsi",
+      "country": "Ukraine"
+    },
+    "email": "ivan.petrenko@example.com",
+    "phone": "+380 50 123 4567",
+    "picture": { "large": "/users/men-1.jpg" },
+    "dob": { "date": "1998-05-14T00:00:00.000Z", "age": 28 },
+    "hobbies": ["Футбол", "Фотографія", "Подорожі"],
+    "details": "Працює фронтенд-розробником, любить гори та каву."
+  },
+  {
+    "id": 2,
+    "gender": "female",
+    "name": { "title": "Ms", "first": "Olena", "last": "Koval" },
+    "location": {
+      "street": { "number": 5, "name": "Holovna St" },
+      "city": "Lviv",
+      "country": "Ukraine"
+    },
+    "email": "olena.koval@example.com",
+    "phone": "+380 67 234 5678",
+    "picture": { "large": "/users/women-1.jpg" },
+    "dob": { "date": "2001-03-22T00:00:00.000Z", "age": 25 },
+    "hobbies": ["Малювання", "Йога", "Читання"],
+    "details": "Студентка дизайнерського факультету."
+  },
+  {
+    "id": 3,
+    "gender": "male",
+    "name": { "title": "Mr", "first": "Andrii", "last": "Shevchuk" },
+    "location": {
+      "street": { "number": 41, "name": "Lesi Ukrainky St" },
+      "city": "Kyiv",
+      "country": "Ukraine"
+    },
+    "email": "andrii.shevchuk@example.com",
+    "phone": "+380 63 345 6789",
+    "picture": { "large": "/users/men-2.jpg" },
+    "dob": { "date": "2009-09-01T00:00:00.000Z", "age": 17 },
+    "hobbies": ["Відеоігри", "Баскетбол"],
+    "details": "Школяр, мріє стати геймдизайнером."
+  },
+  {
+    "id": 4,
+    "gender": "female",
+    "name": { "title": "Mrs", "first": "Maria", "last": "Bondar" },
+    "location": {
+      "street": { "number": 8, "name": "Soborna St" },
+      "city": "Odesa",
+      "country": "Ukraine"
+    },
+    "email": "maria.bondar@example.com",
+    "phone": "+380 93 456 7890",
+    "picture": { "large": "/users/women-2.jpg" },
+    "dob": { "date": "1992-11-30T00:00:00.000Z", "age": 34 },
+    "hobbies": ["Кулінарія", "Велоспорт", "Садівництво"],
+    "details": "Керує невеликою кав'ярнею."
+  },
+  {
+    "id": 5,
+    "gender": "male",
+    "name": { "title": "Mr", "first": "Dmytro", "last": "Melnyk" },
+    "location": {
+      "street": { "number": 77, "name": "Nezalezhnosti Ave" },
+      "city": "Kharkiv",
+      "country": "Ukraine"
+    },
+    "email": "dmytro.melnyk@example.com",
+    "phone": "+380 50 567 8901",
+    "picture": { "large": "/users/men-3.jpg" },
+    "dob": { "date": "1981-07-09T00:00:00.000Z", "age": 45 },
+    "hobbies": ["Риболовля", "Шахи"],
+    "details": "Інженер, у вільний час майструє меблі."
+  },
+  {
+    "id": 6,
+    "gender": "female",
+    "name": { "title": "Miss", "first": "Sofiia", "last": "Tkachenko" },
+    "location": {
+      "street": { "number": 3, "name": "Pushkina St" },
+      "city": "Dnipro",
+      "country": "Ukraine"
+    },
+    "email": "sofiia.tkachenko@example.com",
+    "phone": "+380 66 678 9012",
+    "picture": { "large": "/users/women-3.jpg" },
+    "dob": { "date": "2010-02-18T00:00:00.000Z", "age": 16 },
+    "hobbies": ["Танці", "Фотографія", "Вивчення мов"],
+    "details": "Займається бальними танцями п'ять років."
+  },
+  {
+    "id": 7,
+    "gender": "male",
+    "name": { "title": "Mr", "first": "Oleksandr", "last": "Kravets" },
+    "location": {
+      "street": { "number": 19, "name": "Mazepy St" },
+      "city": "Poltava",
+      "country": "Ukraine"
+    },
+    "email": "oleksandr.kravets@example.com",
+    "phone": "+380 97 789 0123",
+    "picture": { "large": "/users/men-4.jpg" },
+    "dob": { "date": "1974-12-05T00:00:00.000Z", "age": 52 },
+    "hobbies": ["Полювання", "Історія", "Мандрівки"],
+    "details": "Викладач історії в університеті."
+  },
+  {
+    "id": 8,
+    "gender": "female",
+    "name": { "title": "Mrs", "first": "Natalia", "last": "Lysenko" },
+    "location": {
+      "street": { "number": 22, "name": "Franka St" },
+      "city": "Ivano-Frankivsk",
+      "country": "Ukraine"
+    },
+    "email": "natalia.lysenko@example.com",
+    "phone": "+380 68 890 1234",
+    "picture": { "large": "/users/women-4.jpg" },
+    "dob": { "date": "1965-04-27T00:00:00.000Z", "age": 61 },
+    "hobbies": ["В'язання", "Садівництво"],
+    "details": "Пенсіонерка, веде свій блог про рукоділля."
+  },
+  {
+    "id": 9,
+    "gender": "male",
+    "name": { "title": "Mr", "first": "Taras", "last": "Moroz" },
+    "location": {
+      "street": { "number": 14, "name": "Hrushevskoho St" },
+      "city": "Ternopil",
+      "country": "Ukraine"
+    },
+    "email": "taras.moroz@example.com",
+    "phone": "+380 99 901 2345",
+    "picture": { "large": "/users/men-5.jpg" },
+    "dob": { "date": "2007-06-12T00:00:00.000Z", "age": 19 },
+    "hobbies": ["Гітара", "Скейтбординг", "Музика"],
+    "details": "Першокурсник, грає в студентському гурті."
+  },
+  {
+    "id": 10,
+    "gender": "female",
+    "name": { "title": "Ms", "first": "Iryna", "last": "Savchenko" },
+    "location": {
+      "street": { "number": 30, "name": "Cherniakhovskoho St" },
+      "city": "Zhytomyr",
+      "country": "Ukraine"
+    },
+    "email": "iryna.savchenko@example.com",
+    "phone": "+380 50 012 3456",
+    "picture": { "large": "/users/women-5.jpg" },
+    "dob": { "date": "1988-08-08T00:00:00.000Z", "age": 38 },
+    "hobbies": ["Біг", "Подорожі", "Кіно"],
+    "details": "Маркетолог, пробігла три марафони."
+  }
+]

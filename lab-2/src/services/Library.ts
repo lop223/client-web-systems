@@ -1,4 +1,3 @@
-/** Мінімальний контракт, якого має дотримуватись елемент колекції Library<T>. */
 export interface Identifiable {
   id: string;
 }
