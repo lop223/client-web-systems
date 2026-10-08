@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import BaseButton from '@/components/BaseButton.vue'
 import BaseModal from '@/components/BaseModal.vue'
 import ParticipantsTable from '@/components/ParticipantsTable.vue'
@@ -9,13 +9,25 @@ import SearchBar from '@/components/SearchBar.vue'
 import type { Participant, ParticipantForm, SortDirection, SortKey } from '@/types/participant'
 
 const MAX_WINNERS = 3
+const STORAGE_KEY = 'lottery-participants'
+const WINNERS_KEY = 'lottery-winner-ids'
+
+function loadFromStorage<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key)
+    return raw ? (JSON.parse(raw) as T) : fallback
+  } catch {
+    // Пошкоджені дані в сховищі ігноруємо
+    return fallback
+  }
+}
 
 const filterName = ref('')
 const sortKey = ref<SortKey | null>(null)
 const sortDirection = ref<SortDirection>('asc')
 
-const participants = ref<Participant[]>([])
-const winnerIds = ref<number[]>([])
+const participants = ref<Participant[]>(loadFromStorage<Participant[]>(STORAGE_KEY, []))
+const winnerIds = ref<number[]>(loadFromStorage<number[]>(WINNERS_KEY, []))
 
 const editingParticipant = ref<Participant | null>(null)
 const deletingParticipant = ref<Participant | null>(null)
@@ -105,6 +117,14 @@ function toggleSort(key: SortKey): void {
     sortDirection.value = 'asc'
   }
 }
+
+watch(participants, (value) => localStorage.setItem(STORAGE_KEY, JSON.stringify(value)), {
+  deep: true,
+})
+
+watch(winnerIds, (value) => localStorage.setItem(WINNERS_KEY, JSON.stringify(value)), {
+  deep: true,
+})
 </script>
 
 <template>
