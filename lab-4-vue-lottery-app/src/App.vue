@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import BaseButton from '@/components/BaseButton.vue'
-import BaseInput from '@/components/BaseInput.vue'
+import RegisterForm from '@/components/RegisterForm.vue'
 
-const name = ref('')
+const isEmailTaken = (): boolean => false
 </script>
 
 <template>
   <main class="container py-5">
-    <BaseInput id="name" v-model="name" label="Name" placeholder="Enter user name" />
-    <BaseButton>Save</BaseButton>
+    <RegisterForm :is-email-taken="isEmailTaken" @submit="console.log($event)" />
   </main>
 </template>
