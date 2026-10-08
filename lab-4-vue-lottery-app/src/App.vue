@@ -4,8 +4,8 @@ import BaseButton from '@/components/BaseButton.vue'
 import BaseModal from '@/components/BaseModal.vue'
 import ParticipantsTable from '@/components/ParticipantsTable.vue'
 import RegisterForm from '@/components/RegisterForm.vue'
-import WinnersBlock from '@/components/WinnersBlock.vue'
 import SearchBar from '@/components/SearchBar.vue'
+import WinnersBlock from '@/components/WinnersBlock.vue'
 import type { Participant, ParticipantForm, SortDirection, SortKey } from '@/types/participant'
 
 const MAX_WINNERS = 3
@@ -17,20 +17,27 @@ function loadFromStorage<T>(key: string, fallback: T): T {
     const raw = localStorage.getItem(key)
     return raw ? (JSON.parse(raw) as T) : fallback
   } catch {
-    // Пошкоджені дані в сховищі ігноруємо
     return fallback
   }
 }
+
+const participants = ref<Participant[]>(loadFromStorage<Participant[]>(STORAGE_KEY, []))
+const winnerIds = ref<number[]>(loadFromStorage<number[]>(WINNERS_KEY, []))
+winnerIds.value = winnerIds.value.filter((id) => participants.value.some((p) => p.id === id))
+
+const editingParticipant = ref<Participant | null>(null)
+const deletingParticipant = ref<Participant | null>(null)
 
 const filterName = ref('')
 const sortKey = ref<SortKey | null>(null)
 const sortDirection = ref<SortDirection>('asc')
 
-const participants = ref<Participant[]>(loadFromStorage<Participant[]>(STORAGE_KEY, []))
-const winnerIds = ref<number[]>(loadFromStorage<number[]>(WINNERS_KEY, []))
-
-const editingParticipant = ref<Participant | null>(null)
-const deletingParticipant = ref<Participant | null>(null)
+watch(participants, (value) => localStorage.setItem(STORAGE_KEY, JSON.stringify(value)), {
+  deep: true,
+})
+watch(winnerIds, (value) => localStorage.setItem(WINNERS_KEY, JSON.stringify(value)), {
+  deep: true,
+})
 
 const winners = computed<Participant[]>(() =>
   winnerIds.value
@@ -52,6 +59,19 @@ const editingValues = computed<ParticipantForm | undefined>(() => {
   return { name, birthDate, email, phone }
 })
 
+const visibleParticipants = computed<Participant[]>(() => {
+  const query = filterName.value.toLowerCase()
+  const filtered = participants.value.filter((p) => p.name.toLowerCase().includes(query))
+  const key = sortKey.value
+  if (!key) return filtered
+  const factor = sortDirection.value === 'asc' ? 1 : -1
+  return [...filtered].sort((a, b) =>
+    key === 'name'
+      ? a.name.localeCompare(b.name) * factor
+      : a.birthDate.localeCompare(b.birthDate) * factor,
+  )
+})
+
 function isEmailTaken(email: string, excludeId?: number): boolean {
   const normalized = email.trim().toLowerCase()
   return participants.value.some((p) => p.id !== excludeId && p.email.toLowerCase() === normalized)
@@ -59,6 +79,21 @@ function isEmailTaken(email: string, excludeId?: number): boolean {
 
 function addParticipant(values: ParticipantForm): void {
   participants.value.push({ id: Date.now(), ...values })
+}
+
+function updateParticipant(values: ParticipantForm): void {
+  if (!editingParticipant.value) return
+  const id = editingParticipant.value.id
+  participants.value = participants.value.map((p) => (p.id === id ? { id, ...values } : p))
+  editingParticipant.value = null
+}
+
+function confirmDelete(): void {
+  if (!deletingParticipant.value) return
+  const id = deletingParticipant.value.id
+  participants.value = participants.value.filter((p) => p.id !== id)
+  removeWinner(id)
+  deletingParticipant.value = null
 }
 
 function addWinner(): void {
@@ -73,38 +108,6 @@ function removeWinner(id: number): void {
   winnerIds.value = winnerIds.value.filter((winnerId) => winnerId !== id)
 }
 
-function updateParticipant(values: ParticipantForm): void {
-  if (!editingParticipant.value) return
-  const id = editingParticipant.value.id
-  participants.value = participants.value.map((p) => (p.id === id ? { id, ...values } : p))
-  editingParticipant.value = null
-}
-
-function confirmDelete(): void {
-  if (!deletingParticipant.value) return
-  const id = deletingParticipant.value.id
-  participants.value = participants.value.filter((p) => p.id !== id)
-  // Каскадно видаляємо з переможців
-  removeWinner(id)
-  deletingParticipant.value = null
-}
-
-const visibleParticipants = computed<Participant[]>(() => {
-  const query = filterName.value.toLowerCase()
-  // 1. Фільтрація (filter повертає новий масив)
-  const filtered = participants.value.filter((p) => p.name.toLowerCase().includes(query))
-
-  // 2. Сортування (на копії)
-  const key = sortKey.value
-  if (!key) return filtered
-  const factor = sortDirection.value === 'asc' ? 1 : -1
-  return [...filtered].sort((a, b) =>
-    key === 'name'
-      ? a.name.localeCompare(b.name) * factor
-      : a.birthDate.localeCompare(b.birthDate) * factor,
-  )
-})
-
 function setFilter(name: string): void {
   filterName.value = name
 }
@@ -117,18 +120,10 @@ function toggleSort(key: SortKey): void {
     sortDirection.value = 'asc'
   }
 }
-
-watch(participants, (value) => localStorage.setItem(STORAGE_KEY, JSON.stringify(value)), {
-  deep: true,
-})
-
-watch(winnerIds, (value) => localStorage.setItem(WINNERS_KEY, JSON.stringify(value)), {
-  deep: true,
-})
 </script>
 
 <template>
-  <main class="container py-5" style="max-width: 760px">
+  <main class="app container py-5">
     <WinnersBlock
       :winners="winners"
       :can-add-winner="canAddWinner"
@@ -146,7 +141,6 @@ watch(winnerIds, (value) => localStorage.setItem(WINNERS_KEY, JSON.stringify(val
       @sort="toggleSort"
     />
 
-    <!-- Редагування -->
     <BaseModal :show="editingParticipant !== null" @close="editingParticipant = null">
       <template #header>Редагування учасника</template>
       <RegisterForm
@@ -164,13 +158,11 @@ watch(winnerIds, (value) => localStorage.setItem(WINNERS_KEY, JSON.stringify(val
       />
     </BaseModal>
 
-    <!-- Видалення -->
     <BaseModal :show="deletingParticipant !== null" @close="deletingParticipant = null">
       <template #header>Підтвердження</template>
       <p v-if="deletingParticipant" class="mb-0">
-        Ви дійсно бажаєте видалити учасника "{{ deletingParticipant.name }}", "{{
-          deletingParticipant.email
-        }}"?
+        Ви дійсно бажаєте видалити учасника "{{ deletingParticipant.name }}",
+        "{{ deletingParticipant.email }}"?
       </p>
       <template #footer>
         <BaseButton variant="danger" @click="confirmDelete">Так</BaseButton>
@@ -179,3 +171,9 @@ watch(winnerIds, (value) => localStorage.setItem(WINNERS_KEY, JSON.stringify(val
     </BaseModal>
   </main>
 </template>
+
+<style scoped lang="scss">
+.app {
+  max-width: 760px;
+}
+</style>

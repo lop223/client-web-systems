@@ -14,7 +14,7 @@
 @import 'bootstrap/scss/forms';
 @import 'bootstrap/scss/buttons';
 @import 'bootstrap/scss/tables';
-// @import 'bootstrap/scss/card';
+@import 'bootstrap/scss/card';
 @import 'bootstrap/scss/badge';
 @import 'bootstrap/scss/close';
 @import 'bootstrap/scss/transitions';
@@ -26,6 +26,33 @@
 // Іконки (для сортування)
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 
+// Кастомні стилі за макетом
 body {
   background-color: #f4f4f4;
+}
+
+.btn-info {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #3aa9dc;
+  --bs-btn-border-color: #3aa9dc;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #2f94c4;
+  --bs-btn-hover-border-color: #2f94c4;
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #3aa9dc;
+  --bs-btn-disabled-border-color: #3aa9dc;
+}
+
+.card {
+  --bs-card-border-color: #e6e6e6;
+  --bs-card-border-radius: 4px;
+}
+
+.form-control {
+  background-color: #fafafa;
+  font-size: 0.85rem;
+}
+
+.table th {
+  font-size: 0.85rem;
 }
