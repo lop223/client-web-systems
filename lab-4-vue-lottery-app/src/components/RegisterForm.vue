@@ -14,6 +14,7 @@ const props = withDefaults(
     subtitle?: string
     submitLabel?: string
     idPrefix?: string
+    bordered?: boolean
   }>(),
   {
     initialValues: undefined,
@@ -22,6 +23,7 @@ const props = withDefaults(
     subtitle: 'Please fill in all the fields.',
     submitLabel: 'Save',
     idPrefix: 'register',
+    bordered: true,
   },
 )
 
@@ -52,7 +54,13 @@ function onSubmit(): void {
 </script>
 
 <template>
-  <form class="card card-body mb-3" novalidate @submit.prevent @keyup.enter="onSubmit">
+  <form
+    class="mb-3"
+    :class="{ 'card card-body': bordered }"
+    novalidate
+    @submit.prevent
+    @keyup.enter="onSubmit"
+  >
     <h2 class="h6 text-uppercase fw-bold mb-0">{{ title }}</h2>
     <p class="text-muted small">{{ subtitle }}</p>
 
