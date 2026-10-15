@@ -14,6 +14,7 @@ export default defineConfig({
     },
   },
   plugins: [vue(), vueDevTools()],
+  base: '/vue-lottery-app/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
