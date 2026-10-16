@@ -1,11 +1,35 @@
-import { describe, it, expect } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { createPinia, setActivePinia } from 'pinia'
+import { useUsersStore } from '@/stores/users'
+import { ServiceProvider } from '@/services/serviceProvider'
 
-import { mount } from '@vue/test-utils'
-import App from '../App.vue'
+describe('users store', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    vi.restoreAllMocks()
+  })
 
-describe('App', () => {
-  it('mounts renders properly', () => {
-    const wrapper = mount(App)
-    expect(wrapper.text()).toContain('You did it!')
+  it('creates a user locally when the backend request fails', async () => {
+    const service = ServiceProvider.users
+    vi.spyOn(service, 'create').mockRejectedValue(new Error('Server unavailable'))
+
+    const store = useUsersStore()
+    store.users = []
+    store.total = 0
+
+    const created = await store.create({
+      firstName: 'Anna',
+      lastName: 'Petrenko',
+      email: 'anna@example.com',
+      username: 'anna',
+      password: 'secret123',
+      age: 28,
+      gender: 'female',
+      phone: '+380991234567',
+    })
+
+    expect(created.id).toBeGreaterThan(0)
+    expect(store.users[0]?.email).toBe('anna@example.com')
+    expect(store.total).toBe(1)
   })
 })
