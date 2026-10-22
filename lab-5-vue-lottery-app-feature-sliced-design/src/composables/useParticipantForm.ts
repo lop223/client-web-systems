@@ -1,11 +1,6 @@
 import { reactive, ref } from 'vue'
-import type { FormErrors, ParticipantForm } from '@/types/participant'
-import {
-  validateBirthDate,
-  validateEmail,
-  validateName,
-  validatePhone,
-} from '@/utils/validators'
+import type { FormErrors, ParticipantForm } from '@/entities/participant/model/participant'
+import { validateBirthDate, validateEmail, validateName, validatePhone } from '@/utils/validators'
 
 const emptyForm = (): ParticipantForm => ({
   name: '',

@@ -6,7 +6,12 @@ import ParticipantsTable from '@/components/ParticipantsTable.vue'
 import RegisterForm from '@/components/RegisterForm.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import WinnersBlock from '@/components/WinnersBlock.vue'
-import type { Participant, ParticipantForm, SortDirection, SortKey } from '@/types/participant'
+import type {
+  Participant,
+  ParticipantForm,
+  SortDirection,
+  SortKey,
+} from '@/entities/participant/model/participant'
 
 const MAX_WINNERS = 3
 const STORAGE_KEY = 'lottery-participants'
@@ -161,8 +166,9 @@ function toggleSort(key: SortKey): void {
     <BaseModal :show="deletingParticipant !== null" @close="deletingParticipant = null">
       <template #header>Підтвердження</template>
       <p v-if="deletingParticipant" class="mb-0">
-        Ви дійсно бажаєте видалити учасника "{{ deletingParticipant.name }}",
-        "{{ deletingParticipant.email }}"?
+        Ви дійсно бажаєте видалити учасника "{{ deletingParticipant.name }}", "{{
+          deletingParticipant.email
+        }}"?
       </p>
       <template #footer>
         <BaseButton variant="danger" @click="confirmDelete">Так</BaseButton>

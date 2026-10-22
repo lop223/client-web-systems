@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
-import { useUsersStore } from '@/stores/users'
-import { ServiceProvider } from '@/services/serviceProvider'
+import { useUsersStore } from '@/entities/user/model/users.store'
+import { ServiceProvider } from '@/shared/api'
+import { UserService } from '@/entities/user'
 
 describe('users store', () => {
   beforeEach(() => {
@@ -10,7 +11,7 @@ describe('users store', () => {
   })
 
   it('creates a user locally when the backend request fails', async () => {
-    const service = ServiceProvider.users
+    const service = ServiceProvider.get<UserService>('users')
     vi.spyOn(service, 'create').mockRejectedValue(new Error('Server unavailable'))
 
     const store = useUsersStore()

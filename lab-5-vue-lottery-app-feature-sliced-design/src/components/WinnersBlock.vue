@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import BaseButton from '@/components/BaseButton.vue'
 import WinnerItem from '@/components/WinnerItem.vue'
-import type { Participant } from '@/types/participant'
+import type { Participant } from '@/entities/participant/model/participant'
 
 defineProps<{
   winners: Participant[]
