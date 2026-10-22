@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import AppHeader from './components/AppHeader.vue';
+import { AppHeader } from '@/widgets/app-header'
+import { AppConfirmDialog, AppToast } from '@/shared/ui'
 </script>
 
 <template>
@@ -7,4 +8,6 @@ import AppHeader from './components/AppHeader.vue';
   <main>
     <RouterView />
   </main>
+  <AppToast />
+  <AppConfirmDialog />
 </template>

@@ -4,7 +4,14 @@ import './styles/main.scss'
 import router from './providers/router'
 import { pinia } from '@/stores/pinia'
 import { registerServices } from './providers/services'
+import { registerUi } from './providers/ui'
+
 
 registerServices()
 
-createApp(App).use(router).use(pinia).mount('#app')
+const app = createApp(App)
+
+app.use(pinia)
+registerUi(app)
+app.use(router)
+app.mount('#app')

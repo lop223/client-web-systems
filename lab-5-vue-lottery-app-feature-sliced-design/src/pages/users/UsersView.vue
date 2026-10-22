@@ -5,12 +5,26 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { useUsersStore } from '@/entities/user'
 import type { CreateUserDto } from '@/entities/user'
+import { UserForm } from '@/features/user-form'
+import { AppButton, AppInput, AppTable, useAppToast } from '@/shared/ui'
+import type { User } from '@/entities/user'
 
 const PAGE_SIZE = 10
 
 const route = useRoute()
 const router = useRouter()
 const usersStore = useUsersStore()
+
+const toast = useAppToast()
+
+const userColumns = [
+  { field: 'firstName', header: 'Ім’я' },
+  { field: 'lastName', header: 'Прізвище' },
+  { field: 'email', header: 'Email' },
+  { field: 'age', header: 'Вік' },
+  { field: 'gender', header: 'Стать' },
+  { field: 'phone', header: 'Телефон' },
+] satisfies Array<{ field: keyof User & string; header: string }>
 
 const { users, total, isLoading, error } = storeToRefs(usersStore)
 
@@ -75,19 +89,14 @@ function resetCreateForm() {
   }
 }
 
-async function createUser() {
-  const payload = { ...createForm.value }
-
-  if (!payload.firstName.trim() || !payload.lastName.trim() || !payload.email.trim()) {
-    return
-  }
-
-  const created = await usersStore.createUser(payload)
-
-  resetCreateForm()
-
-  if (created) {
+async function createUser(payload: CreateUserDto) {
+  try {
+    const created = await usersStore.createUser(payload)
+    toast.success('Користувача створено')
+    resetCreateForm()
     await router.push({ name: 'user-details', params: { id: created.id } })
+  } catch (cause: unknown) {
+    toast.error(cause instanceof Error ? cause.message : 'Не вдалося створити користувача.')
   }
 }
 
@@ -128,64 +137,18 @@ function goToPage(nextPage: number) {
       </button>
     </div>
 
-    <form v-if="showCreateForm" class="create-user-form" @submit.prevent="createUser">
-      <div class="form-grid">
-        <label>
-          First name
-          <input v-model="createForm.firstName" required />
-        </label>
-
-        <label>
-          Last name
-          <input v-model="createForm.lastName" required />
-        </label>
-
-        <label>
-          Email
-          <input v-model="createForm.email" type="email" required />
-        </label>
-
-        <label>
-          Username
-          <input v-model="createForm.username" required />
-        </label>
-
-        <label>
-          Password
-          <input v-model="createForm.password" type="password" required />
-        </label>
-
-        <label>
-          Age
-          <input v-model.number="createForm.age" type="number" min="1" required />
-        </label>
-
-        <label>
-          Gender
-          <input v-model="createForm.gender" required />
-        </label>
-
-        <label>
-          Phone
-          <input v-model="createForm.phone" type="tel" required />
-        </label>
-      </div>
-
-      <div class="form-actions">
-        <button type="button" class="secondary-button" @click="resetCreateForm">Cancel</button>
-        <button type="submit">Create user</button>
-      </div>
-    </form>
+    <UserForm v-if="showCreateForm" mode="create" @submit="createUser" />
 
     <form class="users-search" @submit.prevent="searchUsers">
       <label for="user-search">Пошук користувачів</label>
 
-      <input
+      <AppInput
         id="user-search"
         v-model="searchInput"
-        type="search"
+        label="Пошук користувачів"
         placeholder="Введіть ім’я або запит"
       />
+      <AppButton type="submit" label="Шукати" />
 
       <button type="submit">Шукати</button>
     </form>
@@ -198,50 +161,16 @@ function goToPage(nextPage: number) {
 
     <template v-else>
       <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Ім’я</th>
-              <th scope="col">Прізвище</th>
-              <th scope="col">Email</th>
-              <th scope="col">Вік</th>
-              <th scope="col">Стать</th>
-              <th scope="col">Телефон</th>
-              <th scope="col">Дії</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr v-for="user in users" :key="user.id">
-              <td>{{ user.firstName }}</td>
-              <td>{{ user.lastName }}</td>
-              <td>{{ user.email }}</td>
-              <td>{{ user.age }}</td>
-              <td>{{ user.gender }}</td>
-              <td>{{ user.phone }}</td>
-              <td>
-                <div class="table-actions">
-                  <RouterLink
-                    :to="{ name: 'user-edit', params: { id: user.id } }"
-                    class="table-action table-action--secondary"
-                  >
-                    Редагувати
-                  </RouterLink>
-                  <RouterLink
-                    :to="{ name: 'user-details', params: { id: user.id } }"
-                    class="table-action table-action--primary"
-                  >
-                    Детально
-                  </RouterLink>
-                </div>
-              </td>
-            </tr>
-
-            <tr v-if="users.length === 0">
-              <td colspan="7">Користувачів не знайдено.</td>
-            </tr>
-          </tbody>
-        </table>
+        <AppTable :rows="users" :columns="userColumns" :loading="isLoading">
+          <template #actions="{ row }">
+            <RouterLink :to="{ name: 'user-edit', params: { id: row.id } }">
+              Редагувати
+            </RouterLink>
+            <RouterLink :to="{ name: 'user-details', params: { id: row.id } }">
+              Детально
+            </RouterLink>
+          </template>
+        </AppTable>
       </div>
 
       <nav class="pagination" aria-label="Пагінація користувачів">
