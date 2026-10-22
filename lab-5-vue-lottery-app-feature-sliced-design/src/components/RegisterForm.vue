@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { watch } from 'vue'
-import BaseButton from '@/components/BaseButton.vue'
-import BaseInput from '@/components/BaseInput.vue'
 import { useParticipantForm } from '@/composables/useParticipantForm'
-import type { ParticipantForm } from '@/entities/participant/model/participant'
+import type { ParticipantForm } from '@/entities/participant'
 
 const props = withDefaults(
   defineProps<{

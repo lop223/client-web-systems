@@ -333,3 +333,60 @@ main > .users-page {
     grid-template-columns: 1fr;
   }
 }
+
+html.app-dark {
+  --surface: #1f2937;
+  --surface-muted: #111827;
+  --border: #374151;
+  --text: #f9fafb;
+  --text-muted: #cbd5e1;
+  --brand-soft: rgba(129, 140, 248, 0.18);
+  --shadow-soft: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+html.app-dark body {
+  background: linear-gradient(180deg, #111827 0%, #0f172a 100%);
+  color: var(--text);
+}
+
+html.app-dark header {
+  background: rgba(17, 24, 39, 0.92);
+}
+
+html.app-dark section,
+html.app-dark .card,
+html.app-dark .table-wrapper,
+html.app-dark .users-page,
+html.app-dark .users-search,
+html.app-dark .pagination {
+  background-color: var(--surface);
+  color: var(--text);
+}
+
+html.app-dark input,
+html.app-dark .form-control,
+html.app-dark select,
+html.app-dark textarea {
+  background-color: var(--surface-muted);
+  color: var(--text);
+}
+
+html.app-dark input::placeholder,
+html.app-dark textarea::placeholder {
+  color: var(--text-muted);
+}
+
+html.app-dark .table {
+  color: var(--text);
+  --bs-table-color: var(--text);
+  --bs-table-bg: transparent;
+  --bs-table-striped-color: var(--text);
+  --bs-table-striped-bg: rgba(255, 255, 255, 0.03);
+  --bs-table-hover-color: var(--text);
+  --bs-table-hover-bg: rgba(255, 255, 255, 0.05);
+}
+
+html.app-dark .table thead th {
+  background: var(--surface-muted);
+  color: var(--text);
+}

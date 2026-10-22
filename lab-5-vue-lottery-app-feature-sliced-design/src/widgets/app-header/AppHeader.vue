@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useSessionStore } from '@/entities/session'
+import { ThemeToggle } from '@/features/theme-toggle'
 
 import AppNavigation from './AppNavigation.vue'
 
@@ -19,6 +20,8 @@ async function logout() {
       <AppNavigation />
 
       <div class="header-actions">
+        <ThemeToggle />
+
         <RouterLink v-if="!session.isAuthenticated" to="/login" class="header-link">
           Login
         </RouterLink>
