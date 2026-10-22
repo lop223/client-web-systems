@@ -18,7 +18,7 @@ describe('users store', () => {
     store.users = []
     store.total = 0
 
-    const created = await store.create({
+    const created = await store.createUser({
       firstName: 'Anna',
       lastName: 'Petrenko',
       email: 'anna@example.com',

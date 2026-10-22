@@ -2,10 +2,9 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import './styles/main.scss'
 import router from './providers/router'
-import { pinia } from '@/stores/pinia'
+import { pinia } from '@/app/providers/pinia'
 import { registerServices } from './providers/services'
 import { registerUi } from './providers/ui'
-
 
 registerServices()
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { watch } from 'vue'
-import { useThemeStore } from '@/entities/settings'
+import { useThemeStore } from '@/entities/theme'
 
 const theme = useThemeStore()
 
