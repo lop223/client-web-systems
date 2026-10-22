@@ -20,7 +20,7 @@
     "bootstrap-icons": "^1.13.1",
     "pinia": "^4.1.0",
     "pinia-plugin-persistedstate": "^4.7.1",
-    "primevue": "^5.0.4",
+    "primevue": "^4.5.5",
     "vee-validate": "^4.15.1",
     "vue": "rc",
     "vue-router": "^5.4.0",

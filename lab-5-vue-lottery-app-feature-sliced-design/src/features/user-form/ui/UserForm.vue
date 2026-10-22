@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch } from 'vue'
+import { computed, watch } from 'vue'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/yup'
 import * as yup from 'yup'
@@ -70,6 +70,13 @@ const [age] = defineField('age')
 const [gender] = defineField('gender')
 const [phone] = defineField('phone')
 
+const passwordModel = computed<string | number>({
+  get: () => password.value ?? '',
+  set: (value) => {
+    password.value = String(value)
+  },
+})
+
 watch(
   () => props.initialValues,
   (values) => resetForm({ values: formValues(values) }),
@@ -88,58 +95,20 @@ const submit = handleSubmit((values) => {
 
 <template>
   <form class="user-form" @submit.prevent="submit">
-    <AppInput
-      id="user-first-name"
-      v-model="firstName as unknown as string | number"
-      label="Ім’я"
-      :error="errors.firstName"
-    />
-    <AppInput
-      id="user-last-name"
-      v-model="lastName as unknown as string | number"
-      label="Прізвище"
-      :error="errors.lastName"
-    />
-    <AppInput
-      id="user-email"
-      v-model="email as unknown as string | number"
-      label="Email"
-      type="email"
-      :error="errors.email"
-    />
-    <AppInput
-      id="user-username"
-      v-model="username as unknown as string | number"
-      label="Username"
-      :error="errors.username"
-    />
+    <AppInput id="user-first-name" v-model="firstName" label="Ім’я" :error="errors.firstName" />
+    <AppInput id="user-last-name" v-model="lastName" label="Прізвище" :error="errors.lastName" />
+    <AppInput id="user-email" v-model="email" label="Email" type="email" :error="errors.email" />
+    <AppInput id="user-username" v-model="username" label="Username" :error="errors.username" />
     <AppInput
       id="user-password"
-      v-model="password as unknown as string | number"
+      v-model="passwordModel"
       label="Пароль"
       type="password"
       :error="errors.password"
     />
-    <AppInput
-      id="user-age"
-      v-model="age as unknown as string | number"
-      label="Вік"
-      type="number"
-      :error="errors.age"
-    />
-    <AppInput
-      id="user-gender"
-      v-model="gender as unknown as string | number"
-      label="Стать"
-      :error="errors.gender"
-    />
-    <AppInput
-      id="user-phone"
-      v-model="phone as unknown as string | number"
-      label="Телефон"
-      type="tel"
-      :error="errors.phone"
-    />
+    <AppInput id="user-age" v-model="age" label="Вік" type="number" :error="errors.age" />
+    <AppInput id="user-gender" v-model="gender" label="Стать" :error="errors.gender" />
+    <AppInput id="user-phone" v-model="phone" label="Телефон" type="tel" :error="errors.phone" />
 
     <AppButton
       type="submit"

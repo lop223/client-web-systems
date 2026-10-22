@@ -140,8 +140,6 @@ function goToPage(nextPage: number) {
     <UserForm v-if="showCreateForm" mode="create" @submit="createUser" />
 
     <form class="users-search" @submit.prevent="searchUsers">
-      <label for="user-search">Пошук користувачів</label>
-
       <AppInput
         id="user-search"
         v-model="searchInput"
@@ -149,8 +147,6 @@ function goToPage(nextPage: number) {
         placeholder="Введіть ім’я або запит"
       />
       <AppButton type="submit" label="Шукати" />
-
-      <button type="submit">Шукати</button>
     </form>
 
     <p v-if="isLoading" role="status">Завантаження користувачів...</p>

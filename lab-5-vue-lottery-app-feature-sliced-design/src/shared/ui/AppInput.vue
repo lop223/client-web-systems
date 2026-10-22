@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import InputText from 'primevue/inputtext'
+
 withDefaults(
   defineProps<{
     id: string
