@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import BaseButton from '@/components/BaseButton.vue'
-import type { Participant, SortDirection, SortKey } from '@/entities/participant/model/participant'
+import type { Participant, SortDirection, SortKey } from '@/entities/participant'
 
 defineProps<{
   participants: Participant[]

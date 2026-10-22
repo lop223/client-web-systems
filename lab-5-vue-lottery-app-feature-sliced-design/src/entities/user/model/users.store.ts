@@ -1,94 +1,125 @@
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { ServiceProvider } from '@/shared/api'
-import { UserService } from '@/entities/user'
-import type { CreateUserDto, UpdateUserDto, User } from '@/entities/user/model/types'
 
-interface ListParams {
+import { ServiceProvider } from '@/shared/api'
+import { UserService } from '../index'
+import type { CreateUserDto, UpdateUserDto, User } from '../index'
+
+interface UsersQuery {
   limit: number
   skip: number
   q: string
 }
 
-export const useUsersStore = defineStore('users', {
-  state: () => ({
-    users: [] as User[],
-    total: 0,
-    isLoading: false,
-    error: null as string | null,
-    loadedKey: null as string | null,
-  }),
+export const useUsersStore = defineStore('users', () => {
+  const users = ref<User[]>([])
+  const currentUser = ref<User | null>(null)
+  const total = ref(0)
+  const isLoading = ref(false)
+  const error = ref<string | null>(null)
+  const loadedKey = ref<string | null>(null)
 
-  actions: {
-    async load(params: ListParams) {
-      const key = JSON.stringify(params)
+  const getService = (): UserService => ServiceProvider.get<UserService>('users')
 
-      if (this.loadedKey === key) return
+  const fetchUsers = async (params: UsersQuery): Promise<void> => {
+    const key = JSON.stringify(params)
+    if (loadedKey.value === key) return
 
-      this.isLoading = true
-      this.error = null
+    isLoading.value = true
+    error.value = null
 
-      try {
-        const result = await ServiceProvider.get<UserService>('users').getAll(params)
-        this.users = result.items
-        this.total = result.total
-        this.loadedKey = key
-      } catch (cause: unknown) {
-        this.error = cause instanceof Error ? cause.message : 'Не вдалося завантажити користувачів.'
-      } finally {
-        this.isLoading = false
+    try {
+      const result = await getService().getAll(params)
+      users.value = result.items
+      total.value = result.total
+      loadedKey.value = key
+    } catch (cause: unknown) {
+      error.value = cause instanceof Error ? cause.message : 'Не вдалося завантажити користувачів.'
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const fetchUser = async (id: number): Promise<User> => {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const user = await getService().getById(id)
+      currentUser.value = user
+      return user
+    } catch (cause: unknown) {
+      error.value = cause instanceof Error ? cause.message : 'Не вдалося завантажити користувача.'
+      throw cause
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const createUser = async (data: CreateUserDto): Promise<User> => {
+    error.value = null
+
+    try {
+      const created = await getService().create(data)
+      users.value = [created, ...users.value]
+      total.value = Math.max(total.value + 1, users.value.length)
+      loadedKey.value = null
+      return created
+    } catch (cause: unknown) {
+      error.value = cause instanceof Error ? cause.message : 'Не вдалося створити користувача.'
+      throw cause
+    }
+  }
+
+  const updateUser = async (id: number, data: UpdateUserDto): Promise<User> => {
+    error.value = null
+
+    try {
+      const updated = await getService().update(id, data)
+      const index = users.value.findIndex((user) => user.id === id)
+
+      if (index !== -1) {
+        users.value[index] = updated
       }
-    },
 
-    async create(data: CreateUserDto): Promise<User> {
-      try {
-        const created = await ServiceProvider.get<UserService>('users').create(data)
-
-        this.users = [created, ...this.users]
-        this.total = Math.max(this.total + 1, this.users.length)
-        this.loadedKey = null
-
-        return created
-      } catch (cause) {
-        const existingIds = this.users.map((user) => user.id)
-        let nextId = 1
-
-        while (existingIds.includes(nextId)) {
-          nextId += 1
-        }
-
-        const fallbackUser: User = {
-          ...data,
-          id: nextId,
-          image: 'local-user',
-        }
-
-        this.users = [fallbackUser, ...this.users]
-        this.total = Math.max(this.total + 1, this.users.length)
-        this.loadedKey = null
-        this.error = null
-
-        return fallbackUser
-      }
-    },
-
-    async update(id: number, data: UpdateUserDto): Promise<User> {
-      const updated = await ServiceProvider.get<UserService>('users').update(id, data)
-
-      const index = this.users.findIndex((user) => user.id === id)
-      if (index === -1) {
-        this.users.unshift(updated)
-      } else {
-        this.users[index] = updated
+      if (currentUser.value?.id === id) {
+        currentUser.value = updated
       }
 
       return updated
-    },
+    } catch (cause: unknown) {
+      error.value = cause instanceof Error ? cause.message : 'Не вдалося оновити користувача.'
+      throw cause
+    }
+  }
 
-    async remove(id: number): Promise<void> {
-      await ServiceProvider.get<UserService>('users').delete(id)
+  const removeUser = async (id: number): Promise<void> => {
+    error.value = null
 
-      this.users = this.users.filter((user) => user.id !== id)
-      this.total = Math.max(0, this.total - 1)
-    },
-  },
+    try {
+      await getService().delete(id)
+      users.value = users.value.filter((user) => user.id !== id)
+      total.value = Math.max(0, total.value - 1)
+
+      if (currentUser.value?.id === id) {
+        currentUser.value = null
+      }
+    } catch (cause: unknown) {
+      error.value = cause instanceof Error ? cause.message : 'Не вдалося видалити користувача.'
+      throw cause
+    }
+  }
+
+  return {
+    users,
+    currentUser,
+    total,
+    isLoading,
+    error,
+    fetchUsers,
+    fetchUser,
+    createUser,
+    updateUser,
+    removeUser,
+  }
 })

@@ -2,8 +2,9 @@
 import { computed, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
-import { useUsersStore } from '@/entities/user/model/users.store'
-import type { CreateUserDto } from '@/entities/user/model/types'
+
+import { useUsersStore } from '@/entities/user'
+import type { CreateUserDto } from '@/entities/user'
 
 const PAGE_SIZE = 10
 
@@ -51,7 +52,7 @@ watch(
 watch(
   [page, searchQuery],
   ([currentPage, currentQuery]) => {
-    void usersStore.load({
+    void usersStore.fetchUsers({
       limit: PAGE_SIZE,
       skip: (currentPage - 1) * PAGE_SIZE,
       q: currentQuery,
@@ -81,7 +82,7 @@ async function createUser() {
     return
   }
 
-  const created = await usersStore.create(payload)
+  const created = await usersStore.createUser(payload)
 
   resetCreateForm()
 

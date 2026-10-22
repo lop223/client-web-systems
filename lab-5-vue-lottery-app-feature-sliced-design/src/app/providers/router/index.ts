@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { useAuthStore } from '@/entities/session/model/auth.store'
+import { useSessionStore } from '@/entities/session'
 import { pinia } from '@/stores/pinia'
 
 const router = createRouter({
@@ -49,7 +49,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  const auth = useAuthStore(pinia)
+  const auth = useSessionStore(pinia)
 
   if (to.meta.requiresAuth && !auth.isAuthenticated) {
     return {

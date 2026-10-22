@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/entities/session/model/auth.store'
+import { useSessionStore } from '@/entities/session'
 
 import AppNavigation from './AppNavigation.vue'
 
-const auth = useAuthStore()
+const session = useSessionStore()
 const router = useRouter()
 
 async function logout() {
-  auth.logout()
+  session.clearSession()
   await router.replace('/login')
 }
 </script>
@@ -19,7 +19,7 @@ async function logout() {
       <AppNavigation />
 
       <div class="header-actions">
-        <RouterLink v-if="!auth.isAuthenticated" to="/login" class="header-link">
+        <RouterLink v-if="!session.isAuthenticated" to="/login" class="header-link">
           Login
         </RouterLink>
 

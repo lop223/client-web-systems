@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useAuthStore } from '@/entities/session/model/auth.store'
+import { useSessionStore } from '@/entities/session'
 
-const auth = useAuthStore()
+const session = useSessionStore()
 const route = useRoute()
 const router = useRouter()
 
@@ -17,7 +17,7 @@ async function submitLogin() {
   error.value = null
 
   try {
-    await auth.login(username.value, password.value)
+    await session.login(username.value, password.value)
 
     const redirect = route.query.redirect
     const safeRedirect =

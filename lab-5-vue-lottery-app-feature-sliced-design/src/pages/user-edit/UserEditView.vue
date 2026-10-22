@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ServiceProvider } from '@/shared/api/serviceProvider'
-import { useUsersStore } from '@/entities/user/model/users.store'
-import type { UpdateUserDto } from '@/entities/user/model/types'
+import { ServiceProvider } from '@/shared/api'
+import { UserService, useUsersStore } from '@/entities/user'
+import type { UpdateUserDto } from '@/entities/user'
 
 const props = defineProps<{ id: string }>()
 
@@ -27,7 +27,7 @@ const error = ref<string | null>(null)
 
 onMounted(async () => {
   try {
-    const user = await ServiceProvider.users.getById(Number(props.id))
+    const user = await ServiceProvider.get<UserService>('users').getById(Number(props.id))
 
     form.firstName = user.firstName
     form.lastName = user.lastName
@@ -62,7 +62,7 @@ async function saveUser() {
   }
 
   try {
-    const updated = await usersStore.update(Number(props.id), data)
+    const updated = await usersStore.updateUser(Number(props.id), data)
     await router.push({
       name: 'user-details',
       params: { id: updated.id },

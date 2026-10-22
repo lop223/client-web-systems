@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ServiceProvider } from '@/shared/api/serviceProvider'
-import { useUsersStore } from '@/entities/user/model/users.store'
-import type { User } from '@/entities/user/model/types'
+import { ServiceProvider } from '@/shared/api'
+import { UserService, useUsersStore } from '@/entities/user'
+import type { User } from '@/entities/user'
 
 const props = defineProps<{ id: string }>()
 
@@ -16,7 +16,7 @@ const error = ref<string | null>(null)
 
 onMounted(async () => {
   try {
-    user.value = await ServiceProvider.users.getById(Number(props.id))
+    user.value = await ServiceProvider.get<UserService>('users').getById(Number(props.id))
   } catch (cause: unknown) {
     error.value = cause instanceof Error ? cause.message : 'Не вдалося завантажити користувача.'
   } finally {
@@ -28,7 +28,7 @@ async function deleteUser() {
   if (!user.value) return
 
   try {
-    await usersStore.remove(user.value.id)
+    await usersStore.removeUser(user.value.id)
     await router.push({ name: 'users' })
   } catch (cause: unknown) {
     error.value = cause instanceof Error ? cause.message : 'Не вдалося видалити користувача.'
