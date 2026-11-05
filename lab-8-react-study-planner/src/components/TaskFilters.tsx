@@ -5,7 +5,7 @@ interface TaskFiltersProps {
   onFilterChange: (filter: TaskFilter) => void;
 }
 
-export const TaskFilters = ({ currentFilter, onFilterChange }: TaskFiltersProps) => {
+const TaskFilters = ({ currentFilter, onFilterChange }: TaskFiltersProps) => {
   const filterButtons: { label: string; value: TaskFilter }[] = [
     { label: 'Всі', value: 'all' },
     { label: 'Виконані', value: 'completed' },
@@ -34,3 +34,5 @@ export const TaskFilters = ({ currentFilter, onFilterChange }: TaskFiltersProps)
     </div>
   );
 };
+
+export default TaskFilters;

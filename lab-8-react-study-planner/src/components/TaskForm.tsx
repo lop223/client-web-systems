@@ -5,7 +5,7 @@ interface TaskFormProps {
   onAddTask: (newTask: Omit<Task, 'id' | 'completed'>) => void;
 }
 
-export const TaskForm = ({ onAddTask }: TaskFormProps) => {
+const TaskForm = ({ onAddTask }: TaskFormProps) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<Priority>('low');
@@ -117,3 +117,5 @@ export const TaskForm = ({ onAddTask }: TaskFormProps) => {
     </form>
   );
 };
+
+export default TaskForm;

@@ -4,7 +4,7 @@ interface TaskStatsProps {
   tasks: Task[];
 }
 
-export const TaskStats = ({ tasks }: TaskStatsProps) => {
+const TaskStats = ({ tasks }: TaskStatsProps) => {
   const total = tasks.length;
   const completed = tasks.filter((task) => task.completed).length;
   const active = total - completed;
@@ -26,3 +26,5 @@ export const TaskStats = ({ tasks }: TaskStatsProps) => {
     </div>
   );
 };
+
+export default TaskStats;
