@@ -1,4 +1,4 @@
-export type priority = 'low' | 'medium' | 'high';
+export type Priority = 'low' | 'medium' | 'high';
 
 export type TaskFilter = 'all' | 'completed' | 'active';
 
@@ -7,6 +7,6 @@ export interface Task {
   title: string;
   description: string;
   completed: boolean;
-  priority: priority;
+  priority: Priority;
   category: string;
 }
