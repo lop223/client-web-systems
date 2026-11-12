@@ -1,11 +1,8 @@
 import type { TaskFilter } from '../types/task';
+import useTaskContext from '../hooks/useTaskContext';
 
-interface TaskFiltersProps {
-  currentFilter: TaskFilter;
-  onFilterChange: (filter: TaskFilter) => void;
-}
-
-const TaskFilters = ({ currentFilter, onFilterChange }: TaskFiltersProps) => {
+const TaskFilters = () => {
+  const { filter: currentFilter, setFilter: onFilterChange } = useTaskContext();
   const filterButtons: { label: string; value: TaskFilter }[] = [
     { label: 'Всі', value: 'all' },
     { label: 'Виконані', value: 'completed' },

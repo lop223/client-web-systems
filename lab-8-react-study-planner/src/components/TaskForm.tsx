@@ -1,15 +1,13 @@
 import { useState, type FormEvent } from 'react';
-import type { Task, Priority } from '../types/task';
+import useTaskContext from '../hooks/useTaskContext';
+import type { Priority } from '../types/task';
 
-interface TaskFormProps {
-  onAddTask: (newTask: Omit<Task, 'id' | 'completed'>) => void;
-}
-
-const TaskForm = ({ onAddTask }: TaskFormProps) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [priority, setPriority] = useState<Priority>('low');
-  const [category, setCategory] = useState('');
+const TaskForm = () => {
+  const { addTask, updateTask, editingTask, setEditingTask } = useTaskContext();
+  const [title, setTitle] = useState(editingTask?.title ?? '');
+  const [description, setDescription] = useState(editingTask?.description ?? '');
+  const [priority, setPriority] = useState<Priority>(editingTask?.priority ?? 'low');
+  const [category, setCategory] = useState(editingTask?.category ?? '');
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = (event: FormEvent) => {
@@ -20,12 +18,18 @@ const TaskForm = ({ onAddTask }: TaskFormProps) => {
       return;
     }
 
-    onAddTask({
+    const taskData = {
       title: title.trim(),
       description: description.trim(),
       category: category.trim() || 'General',
       priority,
-    });
+    };
+
+    if (editingTask) {
+      updateTask({ ...editingTask, ...taskData });
+    } else {
+      addTask(taskData);
+    }
 
     setTitle('');
     setDescription('');
@@ -39,7 +43,9 @@ const TaskForm = ({ onAddTask }: TaskFormProps) => {
       onSubmit={handleSubmit}
       className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs"
     >
-      <h2 className="mb-4 text-lg font-bold text-slate-800">Додати нове завдання</h2>
+      <h2 className="mb-4 text-lg font-bold text-slate-800">
+        {editingTask ? 'Редагувати завдання' : 'Додати нове завдання'}
+      </h2>
 
       {errorMessage && (
         <div className="mb-4 rounded-lg bg-rose-50 p-3 text-xs font-semibold text-rose-600 border border-rose-200">
@@ -108,12 +114,23 @@ const TaskForm = ({ onAddTask }: TaskFormProps) => {
         </div>
       </div>
 
-      <button
-        type="submit"
-        className="mt-4 w-full cursor-pointer rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-blue-700 active:bg-blue-800 transition-colors"
-      >
-        Додати завдання
-      </button>
+      <div className="mt-4 flex gap-2">
+        <button
+          type="submit"
+          className="w-full cursor-pointer rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-blue-700 active:bg-blue-800 transition-colors"
+        >
+          {editingTask ? 'Зберегти зміни' : 'Додати завдання'}
+        </button>
+        {editingTask && (
+          <button
+            type="button"
+            onClick={() => setEditingTask(null)}
+            className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+          >
+            Скасувати
+          </button>
+        )}
+      </div>
     </form>
   );
 };

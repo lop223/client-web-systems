@@ -1,8 +1,16 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { act, render, screen, fireEvent } from '@testing-library/react';
+import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
 import App from '../App';
 
 describe('Study Planner (App)', () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('рендерить заголовок та початковий список завдань', () => {
     render(<App />);
     expect(screen.getByText('Study Planner')).toBeInTheDocument();
@@ -46,9 +54,54 @@ describe('Study Planner (App)', () => {
     const taskTitle = screen.getByText('Tailwind CSS Layout');
     expect(taskTitle).toBeInTheDocument();
 
-    const deleteButtons = screen.getAllByRole('button', { name: /видалити/i });
-    fireEvent.click(deleteButtons[0]);
+    fireEvent.click(screen.getByRole('button', { name: 'Видалити Tailwind CSS Layout' }));
 
+    expect(screen.queryByText('Tailwind CSS Layout')).not.toBeInTheDocument();
+    expect(screen.getByText('React Components')).toBeInTheDocument();
     expect(screen.getByText('Всього')).toBeInTheDocument();
+  });
+
+  it('дозволяє скасувати видалення протягом п’яти секунд', () => {
+    vi.useFakeTimers();
+    render(<App />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Видалити Tailwind CSS Layout' }));
+    expect(screen.queryByText('Tailwind CSS Layout')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Undo' }));
+
+    expect(screen.getByText('Tailwind CSS Layout')).toBeInTheDocument();
+  });
+
+  it('підтверджує видалення після завершення п’яти секунд', () => {
+    vi.useFakeTimers();
+    render(<App />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Видалити Tailwind CSS Layout' }));
+    act(() => vi.advanceTimersByTime(5000));
+
+    expect(screen.queryByRole('button', { name: 'Undo' })).not.toBeInTheDocument();
+    expect(JSON.parse(window.localStorage.getItem('study-planner-tasks') ?? '[]')).toHaveLength(2);
+  });
+
+  it('зберігає зміни списку в localStorage', () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole('checkbox', { name: 'Позначити React Components як виконане' })
+    );
+
+    const storedTasks = JSON.parse(window.localStorage.getItem('study-planner-tasks') ?? '[]');
+    expect(storedTasks[0].completed).toBe(true);
+  });
+
+  it('дозволяє редагувати завдання та показує сповіщення', () => {
+    render(<App />);
+    fireEvent.click(screen.getAllByRole('button', { name: 'Редагувати' })[0]!);
+    fireEvent.change(screen.getByPlaceholderText('Наприклад: Вивчити хук useState'), {
+      target: { value: 'Оновлене завдання' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Зберегти зміни' }));
+
+    expect(screen.getByText('Оновлене завдання')).toBeInTheDocument();
+    expect(screen.getByText('Завдання оновлено')).toBeInTheDocument();
   });
 });
