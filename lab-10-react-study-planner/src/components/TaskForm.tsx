@@ -39,22 +39,15 @@ const TaskForm = ({ onAddTask }: TaskFormProps) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs"
-    >
-      <h2 className="mb-4 text-lg font-bold text-slate-800">Додати нове завдання</h2>
+    <form onSubmit={handleSubmit} className="task-form">
+      <h2 className="task-form__title">Додати нове завдання</h2>
 
-      {errorMessage && (
-        <div className="mb-4 rounded-lg bg-rose-50 p-3 text-xs font-semibold text-rose-600 border border-rose-200">
-          {errorMessage}
-        </div>
-      )}
+      {errorMessage && <div className="form-error">{errorMessage}</div>}
 
-      <div className="space-y-3">
-        <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
-            Назва <span className="text-rose-500">*</span>
+      <div className="task-form__fields">
+        <div className="field">
+          <label className="field__label">
+            Назва <span className="field__required">*</span>
           </label>
           <input
             type="text"
@@ -64,45 +57,39 @@ const TaskForm = ({ onAddTask }: TaskFormProps) => {
               if (errorMessage) setErrorMessage('');
             }}
             placeholder="Наприклад: Вивчити хук useState"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
+            className="field__input"
           />
         </div>
 
-        <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
-            Опис
-          </label>
+        <div className="field">
+          <label className="field__label">Опис</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={2}
             placeholder="Короткий опис або деталі завдання..."
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all resize-none"
+            className="field__textarea"
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
-              Категорія
-            </label>
+        <div className="task-form__row">
+          <div className="field">
+            <label className="field__label">Категорія</label>
             <input
               type="text"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               placeholder="React, Англійська, Бази даних..."
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
+              className="field__input"
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
-              Пріоритет
-            </label>
+          <div className="field">
+            <label className="field__label">Пріоритет</label>
             <select
               value={priority}
               onChange={(e) => setPriority(e.target.value as Priority)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
+              className="field__select"
             >
               <option value="low">Низький (Low)</option>
               <option value="medium">Середній (Medium)</option>
@@ -112,10 +99,7 @@ const TaskForm = ({ onAddTask }: TaskFormProps) => {
         </div>
       </div>
 
-      <button
-        type="submit"
-        className="mt-4 w-full cursor-pointer rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-blue-700 active:bg-blue-800 transition-colors"
-      >
+      <button type="submit" className="task-form__submit">
         Додати завдання
       </button>
     </form>

@@ -10,18 +10,18 @@ const TaskStats = ({ tasks }: TaskStatsProps) => {
   const active = total - completed;
 
   return (
-    <div className="grid grid-cols-3 gap-3 rounded-xl bg-white p-4 shadow-xs border border-slate-200">
-      <div className="text-center">
-        <span className="block text-2xl font-bold text-slate-800">{total}</span>
-        <span className="text-xs font-medium text-slate-500">Всього</span>
+    <div className="stats">
+      <div className="stats__item">
+        <span className="stats__value">{total}</span>
+        <span className="stats__label">Всього</span>
       </div>
-      <div className="text-center border-x border-slate-100">
-        <span className="block text-2xl font-bold text-emerald-600">{completed}</span>
-        <span className="text-xs font-medium text-slate-500">Виконано</span>
+      <div className="stats__item">
+        <span className="stats__value stats__value--success">{completed}</span>
+        <span className="stats__label">Виконано</span>
       </div>
-      <div className="text-center">
-        <span className="block text-2xl font-bold text-amber-600">{active}</span>
-        <span className="text-xs font-medium text-slate-500">В процесі</span>
+      <div className="stats__item">
+        <span className="stats__value stats__value--warning">{active}</span>
+        <span className="stats__label">В процесі</span>
       </div>
     </div>
   );

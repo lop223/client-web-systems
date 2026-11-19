@@ -6,13 +6,8 @@ interface TaskItemProps {
   onDelete: (id: number) => void;
   onSelect: (id: number) => void;
 }
-const TaskItem = ({ task, onToggle, onDelete, onSelect }: TaskItemProps) => {
-  const priorityStyles = {
-    low: 'bg-slate-100 text-slate-700 border-slate-200',
-    medium: 'bg-amber-50 text-amber-700 border-amber-200',
-    high: 'bg-rose-50 text-rose-700 border-rose-200',
-  };
 
+const TaskItem = ({ task, onToggle, onDelete, onSelect }: TaskItemProps) => {
   const priorityLabels = {
     low: 'Низький',
     medium: 'Середній',
@@ -20,47 +15,33 @@ const TaskItem = ({ task, onToggle, onDelete, onSelect }: TaskItemProps) => {
   };
 
   return (
-    <div
-      className={`group flex flex-col justify-between rounded-xl border p-4 transition-all sm:flex-row sm:items-center ${
-        task.completed
-          ? 'border-slate-200 bg-slate-50/70 text-slate-400'
-          : 'border-slate-200 bg-white shadow-xs hover:border-slate-300'
-      }`}
-    >
-      <div className="flex items-start gap-3">
+    <div className={`task-item ${task.completed ? 'task-item--completed' : ''}`}>
+      <div className="task-item__main">
         <input
           type="checkbox"
           checked={task.completed}
           onChange={() => onToggle(task.id)}
           aria-label={`Позначити ${task.title} як ${task.completed ? 'не виконане' : 'виконане'}`}
-          className="mt-1 h-5 w-5 cursor-pointer rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+          className="task-item__checkbox"
         />
 
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="task-item__content">
+          <div className="task-item__meta">
             <button
               type="button"
               onClick={() => onSelect(task.id)}
-              className={`text-left text-base font-semibold ${
-                task.completed ? 'line-through text-slate-400' : 'text-slate-800'
-              }`}
+              className={`task-item__title ${task.completed ? 'task-item__title--completed' : ''}`}
             >
               {task.title}
             </button>
-            <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
-              {task.category}
-            </span>
-            <span
-              className={`rounded-md border px-2 py-0.5 text-xs font-medium ${priorityStyles[task.priority]}`}
-            >
-              {priorityLabels[task.priority]}
-            </span>
+            <span className="badge badge--category">{task.category}</span>
+            <span className={`badge badge--${task.priority}`}>{priorityLabels[task.priority]}</span>
           </div>
 
           {task.description && (
             <p
-              className={`mt-1 text-sm ${
-                task.completed ? 'line-through text-slate-400' : 'text-slate-600'
+              className={`task-item__description ${
+                task.completed ? 'task-item__description--completed' : ''
               }`}
             >
               {task.description}
@@ -69,14 +50,12 @@ const TaskItem = ({ task, onToggle, onDelete, onSelect }: TaskItemProps) => {
         </div>
       </div>
 
-      <div className="mt-3 flex items-center justify-end gap-2 border-t border-slate-100 pt-3 sm:mt-0 sm:border-t-0 sm:pt-0">
+      <div className="task-item__actions">
         <button
           type="button"
           onClick={() => onToggle(task.id)}
-          className={`cursor-pointer rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
-            task.completed
-              ? 'text-slate-600 hover:bg-slate-200'
-              : 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100'
+          className={`task-item__button ${
+            task.completed ? 'task-item__button--restore' : 'task-item__button--complete'
           }`}
         >
           {task.completed ? 'Повернути' : 'Виконано'}
@@ -85,7 +64,7 @@ const TaskItem = ({ task, onToggle, onDelete, onSelect }: TaskItemProps) => {
         <button
           type="button"
           onClick={() => onDelete(task.id)}
-          className="cursor-pointer rounded-lg px-2.5 py-1 text-xs font-medium text-rose-600 hover:bg-rose-50 transition-colors"
+          className="task-item__button task-item__button--delete"
         >
           Видалити
         </button>

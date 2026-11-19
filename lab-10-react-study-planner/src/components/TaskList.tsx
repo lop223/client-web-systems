@@ -18,23 +18,23 @@ const TaskList = ({
 }: TaskListProps) => {
   if (totalTasksCount === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-slate-300 p-8 text-center bg-white/50">
-        <p className="text-base font-semibold text-slate-700">Завдань поки немає.</p>
-        <p className="mt-1 text-sm text-slate-500">Додайте перше навчальне завдання вище.</p>
+      <div className="task-list__empty">
+        <p className="task-list__empty-title">Завдань поки немає.</p>
+        <p className="task-list__empty-text">Додайте перше навчальне завдання вище.</p>
       </div>
     );
   }
 
   if (tasks.length === 0) {
     return (
-      <div className="rounded-xl border border-slate-200 p-8 text-center bg-white shadow-xs">
-        <p className="text-sm font-medium text-slate-600">За цим фільтром завдань немає.</p>
+      <div className="task-list__empty">
+        <p className="task-list__empty-text">За цим фільтром завдань немає.</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-3">
+    <div className="task-list">
       {tasks.map((task) => (
         <TaskItem
           key={task.id}

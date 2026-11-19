@@ -62,33 +62,24 @@ export default function App() {
   const isInitialLoading = state.status === 'loading' && state.tasks.length === 0;
 
   return (
-    <div className="min-h-screen bg-slate-100 px-4 py-10 sm:px-6 lg:px-8">
-      <main className="mx-auto max-w-2xl space-y-6">
+    <div className="app">
+      <main className="app__main">
         <Header />
 
         {feedbackMessage && (
-          <div
-            role="status"
-            className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700"
-          >
+          <div role="status" className="app__feedback app__feedback--success">
             {feedbackMessage}
           </div>
         )}
 
         {state.error && (
-          <div
-            role="alert"
-            className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700"
-          >
+          <div role="alert" className="app__feedback app__feedback--error">
             Не вдалося виконати операцію: {state.error}
           </div>
         )}
 
         {isInitialLoading && (
-          <div
-            role="status"
-            className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-600"
-          >
+          <div role="status" className="status-panel">
             Завантаження завдань...
           </div>
         )}

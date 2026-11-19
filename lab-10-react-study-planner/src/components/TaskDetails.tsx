@@ -16,10 +16,7 @@ const priorityLabels = {
 const TaskDetails = ({ task, isLoading, error, onClose }: TaskDetailsProps) => {
   if (isLoading) {
     return (
-      <section
-        role="status"
-        className="rounded-xl border border-slate-200 bg-white p-5 text-sm text-slate-600"
-      >
+      <section role="status" className="status-panel">
         Завантаження деталей завдання...
       </section>
     );
@@ -27,10 +24,7 @@ const TaskDetails = ({ task, isLoading, error, onClose }: TaskDetailsProps) => {
 
   if (error) {
     return (
-      <section
-        role="alert"
-        className="rounded-xl border border-rose-200 bg-rose-50 p-5 text-sm text-rose-700"
-      >
+      <section role="alert" className="status-panel status-panel--error">
         Не вдалося завантажити завдання: {error}
       </section>
     );
@@ -41,42 +35,36 @@ const TaskDetails = ({ task, isLoading, error, onClose }: TaskDetailsProps) => {
   }
 
   return (
-    <section className="rounded-xl border border-blue-200 bg-blue-50 p-5">
-      <div className="mb-4 flex items-start justify-between gap-4">
+    <section className="task-details">
+      <div className="task-details__header">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-blue-600">
-            Деталі завдання
-          </p>
-          <h2 className="mt-1 text-xl font-bold text-slate-800">{task.title}</h2>
+          <p className="task-details__label">Деталі завдання</p>
+          <h2 className="task-details__title">{task.title}</h2>
         </div>
 
-        <button
-          type="button"
-          onClick={onClose}
-          className="rounded-lg px-2 py-1 text-sm text-slate-500 hover:bg-white hover:text-slate-800"
-        >
+        <button type="button" onClick={onClose} className="task-details__close">
           Закрити
         </button>
       </div>
 
-      <dl className="space-y-2 text-sm text-slate-700">
+      <dl className="task-details__content">
         <div>
-          <dt className="font-semibold">Опис</dt>
+          <dt>Опис</dt>
           <dd>{task.description || 'Опис відсутній'}</dd>
         </div>
 
         <div>
-          <dt className="font-semibold">Категорія</dt>
+          <dt>Категорія</dt>
           <dd>{task.category}</dd>
         </div>
 
         <div>
-          <dt className="font-semibold">Пріоритет</dt>
+          <dt>Пріоритет</dt>
           <dd>{priorityLabels[task.priority]}</dd>
         </div>
 
         <div>
-          <dt className="font-semibold">Статус</dt>
+          <dt>Статус</dt>
           <dd>{task.completed ? 'Виконано' : 'У процесі'}</dd>
         </div>
       </dl>

@@ -1,20 +1,7 @@
-import { createContext, useCallback, useEffect, useReducer, type ReactNode } from 'react';
+import { useCallback, useEffect, useReducer, type ReactNode } from 'react';
 import { taskRepository } from '../repositories/TaskRepository';
 import type { Task, TaskInput, TaskPage, TaskUpdate } from '../types/task';
-
-type RequestStatus = 'idle' | 'loading' | 'success' | 'error';
-
-interface TaskState {
-  tasks: Task[];
-  total: number;
-  skip: number;
-  limit: number;
-  status: RequestStatus;
-  error: string | null;
-  selectedTask: Task | null;
-  selectedTaskStatus: RequestStatus;
-  selectedTaskError: string | null;
-}
+import { TaskContext, type TaskContextValue, type TaskState } from './taskContextDefinition';
 
 type TaskAction =
   | { type: 'LOAD_START' }
@@ -27,16 +14,6 @@ type TaskAction =
   | { type: 'UPDATE_SUCCESS'; payload: Task }
   | { type: 'DELETE_SUCCESS'; payload: number }
   | { type: 'MUTATION_ERROR'; payload: string };
-
-interface TaskContextValue {
-  state: TaskState;
-  loadTasks: (options?: { limit?: number; skip?: number }) => Promise<void>;
-  getTaskById: (id: number) => Promise<Task | null>;
-  createTask: (task: TaskInput) => Promise<Task | null>;
-  updateTask: (id: number, task: TaskUpdate) => Promise<Task | null>;
-  deleteTask: (id: number) => Promise<boolean>;
-  toggleTask: (id: number) => Promise<Task | null>;
-}
 
 const initialState: TaskState = {
   tasks: [],
@@ -147,8 +124,6 @@ const taskReducer = (state: TaskState, action: TaskAction): TaskState => {
       return state;
   }
 };
-
-export const TaskContext = createContext<TaskContextValue | null>(null);
 
 interface TaskProviderProps {
   children: ReactNode;

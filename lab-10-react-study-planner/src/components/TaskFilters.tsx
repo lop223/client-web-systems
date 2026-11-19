@@ -13,7 +13,7 @@ const TaskFilters = ({ currentFilter, onFilterChange }: TaskFiltersProps) => {
   ];
 
   return (
-    <div className="flex items-center justify-center gap-2 p-1 bg-slate-200/70 rounded-lg w-fit mx-auto">
+    <div className="filters">
       {filterButtons.map(({ label, value }) => {
         const isActive = currentFilter === value;
         return (
@@ -21,11 +21,7 @@ const TaskFilters = ({ currentFilter, onFilterChange }: TaskFiltersProps) => {
             key={value}
             type="button"
             onClick={() => onFilterChange(value)}
-            className={`cursor-pointer rounded-md px-4 py-1.5 text-xs font-medium transition-all ${
-              isActive
-                ? 'bg-white text-blue-600 shadow-xs font-semibold'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
+            className={`filters__button ${isActive ? 'filters__button--active' : ''}`}
           >
             {label}
           </button>
