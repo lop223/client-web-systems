@@ -3,8 +3,11 @@ import type { TaskState } from '../reducers/taskReducer';
 import type { Task, TaskFilter } from '../types/task';
 
 export type NewTask = Omit<Task, 'id' | 'completed'>;
+export type ThemeMode = 'light' | 'dark';
 
 export interface TaskContextValue extends TaskState {
+  theme: ThemeMode;
+  toggleTheme: () => void;
   addTask: (task: NewTask) => void;
   updateTask: (task: Task) => void;
   toggleTask: (id: number) => void;

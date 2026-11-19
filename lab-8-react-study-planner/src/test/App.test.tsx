@@ -38,6 +38,15 @@ describe('Study Planner (App)', () => {
     expect(screen.getByText('Назва не може бути порожньою!')).toBeInTheDocument();
   });
 
+  it('перемикає тему світла/темна через useContext', () => {
+    render(<App />);
+
+    const themeButton = screen.getByRole('button', { name: 'Темна тема' });
+    fireEvent.click(themeButton);
+
+    expect(screen.getByRole('button', { name: 'Світла тема' })).toBeInTheDocument();
+  });
+
   it('коректно перемикає фільтри завдань', () => {
     render(<App />);
 

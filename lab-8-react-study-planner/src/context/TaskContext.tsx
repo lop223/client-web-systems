@@ -9,13 +9,28 @@ import {
 } from 'react';
 import { data } from '../data/data';
 import useLocalStorage from '../hooks/useLocalStorage';
-import { TaskContext, type NewTask, type TaskContextValue } from './taskContextDefinition';
+import {
+  TaskContext,
+  type NewTask,
+  type TaskContextValue,
+  type ThemeMode,
+} from './taskContextDefinition';
 import taskReducer, { type ToastMessage } from '../reducers/taskReducer';
 import type { Task, TaskFilter } from '../types/task';
 
 const STORAGE_KEY = 'study-planner-tasks';
+const THEME_STORAGE_KEY = 'study-planner-theme';
 const DELETE_UNDO_DELAY = 5000;
 const TOAST_DURATION = 3000;
+
+const getInitialTheme = (): ThemeMode => {
+  if (typeof window === 'undefined') {
+    return 'light';
+  }
+
+  const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+  return savedTheme === 'dark' ? 'dark' : 'light';
+};
 
 export const TaskProvider = ({ children }: PropsWithChildren) => {
   const [storedTasks, setStoredTasks] = useLocalStorage<Task[]>(STORAGE_KEY, data);
@@ -26,9 +41,22 @@ export const TaskProvider = ({ children }: PropsWithChildren) => {
     toasts: [],
   });
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [theme, setTheme] = useState<ThemeMode>(getInitialTheme);
   const toastId = useRef(0);
   const deleteTimers = useRef(new Map<number, ReturnType<typeof setTimeout>>());
   const toastTimers = useRef(new Map<number, ReturnType<typeof setTimeout>>());
+
+  const toggleTheme = useCallback(
+    () => setTheme((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark')),
+    []
+  );
+
+  useEffect(() => {
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    document.documentElement.style.colorScheme = theme;
+  }, [theme]);
 
   const createToast = useCallback(
     (type: ToastMessage['type'], message: string, undoTaskId?: number): ToastMessage => ({
@@ -169,6 +197,8 @@ export const TaskProvider = ({ children }: PropsWithChildren) => {
   const value = useMemo<TaskContextValue>(
     () => ({
       ...state,
+      theme,
+      toggleTheme,
       addTask,
       updateTask,
       toggleTask,
@@ -183,6 +213,8 @@ export const TaskProvider = ({ children }: PropsWithChildren) => {
     }),
     [
       state,
+      theme,
+      toggleTheme,
       addTask,
       updateTask,
       toggleTask,

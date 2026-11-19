@@ -1,5 +1,4 @@
 import useTaskContext from '../hooks/useTaskContext';
-
 const TaskStats = () => {
   const { tasks, clearCompleted, resetTasks } = useTaskContext();
   const total = tasks.length;
