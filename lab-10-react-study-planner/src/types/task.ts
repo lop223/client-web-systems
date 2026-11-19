@@ -10,3 +10,14 @@ export interface Task {
   priority: Priority;
   category: string;
 }
+
+export type TaskInput = Omit<Task, 'id' | 'completed'>;
+
+export type TaskUpdate = Partial<TaskInput>;
+
+export interface TaskPage {
+  tasks: Task[];
+  total: number;
+  skip: number;
+  limit: number;
+}
