@@ -1,75 +1,90 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
-import { TaskProvider } from '../context/TaskContext';
+import { useTasks } from '../hooks/useTasks';
+import type { Task } from '../types/task';
 
-describe('Study Planner (App)', () => {
-  it('рендерить заголовок та початковий список завдань', () => {
-    render(
-      <TaskProvider>
-        <App />
-      </TaskProvider>
-    );
+vi.mock('../hooks/useTasks', () => ({
+  useTasks: vi.fn(),
+}));
+
+const task: Task = {
+  id: 1,
+  title: 'React Components',
+  description: 'Study components',
+  completed: false,
+  priority: 'high',
+  category: 'React',
+};
+
+const createTasksApi = (): ReturnType<typeof useTasks> => ({
+  state: {
+    tasks: [task],
+    total: 1,
+    skip: 0,
+    limit: 10,
+    status: 'success',
+    error: null,
+    selectedTask: null,
+    selectedTaskStatus: 'idle',
+    selectedTaskError: null,
+  },
+  loadTasks: vi.fn(async () => {}),
+  getTaskById: vi.fn(async () => task),
+  createTask: vi.fn(async () => task),
+  updateTask: vi.fn(async () => task),
+  deleteTask: vi.fn(async () => true),
+  toggleTask: vi.fn(async () => task),
+});
+
+describe('Study Planner', () => {
+  let tasksApi: ReturnType<typeof createTasksApi>;
+
+  beforeEach(() => {
+    tasksApi = createTasksApi();
+    vi.mocked(useTasks).mockReturnValue(tasksApi);
+  });
+
+  it('показує заголовок і завантажені завдання', () => {
+    render(<App />);
+
     expect(screen.getByText('Study Planner')).toBeInTheDocument();
     expect(screen.getByText('React Components')).toBeInTheDocument();
   });
 
-  it('дозволяє додати нове завдання у список', () => {
-    render(
-      <TaskProvider>
-        <App />
-      </TaskProvider>
-    );
+  it('фільтрує список виконаних завдань', () => {
+    tasksApi.state.tasks = [task, { ...task, id: 2, title: 'TypeScript', completed: true }];
 
-    const input = screen.getByPlaceholderText('Наприклад: Вивчити хук useState');
-    const submitButton = screen.getByRole('button', { name: /додати завдання/i });
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: 'Виконані' }));
 
-    fireEvent.change(input, { target: { value: 'Нове тестове завдання' } });
-    fireEvent.click(submitButton);
-
-    expect(screen.getByText('Нове тестове завдання')).toBeInTheDocument();
-  });
-
-  it('показує помилку валідації, якщо поле назви порожнє', () => {
-    render(
-      <TaskProvider>
-        <App />
-      </TaskProvider>
-    );
-
-    const submitButton = screen.getByRole('button', { name: /додати завдання/i });
-    fireEvent.click(submitButton);
-
-    expect(screen.getByText('Назва не може бути порожньою!')).toBeInTheDocument();
-  });
-
-  it('коректно перемикає фільтри завдань', () => {
-    render(
-      <TaskProvider>
-        <App />
-      </TaskProvider>
-    );
-
-    const completedFilterBtn = screen.getByRole('button', { name: 'Виконані' });
-    fireEvent.click(completedFilterBtn);
-
+    expect(screen.getByText('TypeScript')).toBeInTheDocument();
     expect(screen.queryByText('React Components')).not.toBeInTheDocument();
-    expect(screen.getByText('TypeScript Exercises')).toBeInTheDocument();
   });
 
-  it('дозволяє видалити завдання зі списку', () => {
-    render(
-      <TaskProvider>
-        <App />
-      </TaskProvider>
-    );
+  it('викликає API-метод для зміни статусу завдання', () => {
+    render(<App />);
 
-    const taskTitle = screen.getByText('Tailwind CSS Layout');
-    expect(taskTitle).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Виконано' }));
 
-    const deleteButtons = screen.getAllByRole('button', { name: /видалити/i });
-    fireEvent.click(deleteButtons[0]);
+    expect(tasksApi.toggleTask).toHaveBeenCalledWith(task.id);
+  });
 
-    expect(screen.getByText('Всього')).toBeInTheDocument();
+  it('завантажує деталі після вибору завдання', () => {
+    render(<App />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'React Components' }));
+
+    expect(tasksApi.getTaskById).toHaveBeenCalledWith(task.id);
+  });
+
+  it('показує стан початкового завантаження', () => {
+    tasksApi.state.tasks = [];
+    tasksApi.state.total = 0;
+    tasksApi.state.status = 'loading';
+
+    render(<App />);
+
+    expect(screen.getByRole('status')).toHaveTextContent('Завантаження завдань...');
   });
 });
