@@ -245,11 +245,16 @@ export const TaskProvider = ({ children }: TaskProviderProps) => {
           type: 'MUTATION_ERROR',
           payload: `Завдання з id ${id} не знайдено`,
         });
+
         return null;
       }
 
       return updateTask(id, {
         title: task.title,
+        description: task.description,
+        completed: !task.completed,
+        priority: task.priority,
+        category: task.category,
       });
     },
     [state.tasks, updateTask]

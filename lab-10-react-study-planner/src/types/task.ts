@@ -13,7 +13,9 @@ export interface Task {
 
 export type TaskInput = Omit<Task, 'id' | 'completed'>;
 
-export type TaskUpdate = Partial<TaskInput>;
+export type TaskUpdate = Partial<
+  Pick<Task, 'title' | 'description' | 'completed' | 'priority' | 'category'>
+>;
 
 export interface TaskPage {
   tasks: Task[];

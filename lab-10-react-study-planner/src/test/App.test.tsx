@@ -1,16 +1,25 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import App from '../App';
+import { TaskProvider } from '../context/TaskContext';
 
 describe('Study Planner (App)', () => {
   it('рендерить заголовок та початковий список завдань', () => {
-    render(<App />);
+    render(
+      <TaskProvider>
+        <App />
+      </TaskProvider>
+    );
     expect(screen.getByText('Study Planner')).toBeInTheDocument();
     expect(screen.getByText('React Components')).toBeInTheDocument();
   });
 
   it('дозволяє додати нове завдання у список', () => {
-    render(<App />);
+    render(
+      <TaskProvider>
+        <App />
+      </TaskProvider>
+    );
 
     const input = screen.getByPlaceholderText('Наприклад: Вивчити хук useState');
     const submitButton = screen.getByRole('button', { name: /додати завдання/i });
@@ -22,7 +31,11 @@ describe('Study Planner (App)', () => {
   });
 
   it('показує помилку валідації, якщо поле назви порожнє', () => {
-    render(<App />);
+    render(
+      <TaskProvider>
+        <App />
+      </TaskProvider>
+    );
 
     const submitButton = screen.getByRole('button', { name: /додати завдання/i });
     fireEvent.click(submitButton);
@@ -31,7 +44,11 @@ describe('Study Planner (App)', () => {
   });
 
   it('коректно перемикає фільтри завдань', () => {
-    render(<App />);
+    render(
+      <TaskProvider>
+        <App />
+      </TaskProvider>
+    );
 
     const completedFilterBtn = screen.getByRole('button', { name: 'Виконані' });
     fireEvent.click(completedFilterBtn);
@@ -41,7 +58,11 @@ describe('Study Planner (App)', () => {
   });
 
   it('дозволяє видалити завдання зі списку', () => {
-    render(<App />);
+    render(
+      <TaskProvider>
+        <App />
+      </TaskProvider>
+    );
 
     const taskTitle = screen.getByText('Tailwind CSS Layout');
     expect(taskTitle).toBeInTheDocument();
