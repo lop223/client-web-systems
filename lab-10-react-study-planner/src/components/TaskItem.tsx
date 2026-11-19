@@ -4,9 +4,9 @@ interface TaskItemProps {
   task: Task;
   onToggle: (id: number) => void;
   onDelete: (id: number) => void;
+  onSelect: (id: number) => void;
 }
-
-const TaskItem = ({ task, onToggle, onDelete }: TaskItemProps) => {
+const TaskItem = ({ task, onToggle, onDelete, onSelect }: TaskItemProps) => {
   const priorityStyles = {
     low: 'bg-slate-100 text-slate-700 border-slate-200',
     medium: 'bg-amber-50 text-amber-700 border-amber-200',
@@ -38,13 +38,15 @@ const TaskItem = ({ task, onToggle, onDelete }: TaskItemProps) => {
 
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <h3
-              className={`text-base font-semibold ${
+            <button
+              type="button"
+              onClick={() => onSelect(task.id)}
+              className={`text-left text-base font-semibold ${
                 task.completed ? 'line-through text-slate-400' : 'text-slate-800'
               }`}
             >
               {task.title}
-            </h3>
+            </button>
             <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
               {task.category}
             </span>

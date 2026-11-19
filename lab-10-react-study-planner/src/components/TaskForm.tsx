@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react';
 import type { Task, Priority } from '../types/task';
 
 interface TaskFormProps {
-  onAddTask: (newTask: Omit<Task, 'id' | 'completed'>) => void;
+  onAddTask: (newTask: Omit<Task, 'id' | 'completed'>) => Promise<boolean>;
 }
 
 const TaskForm = ({ onAddTask }: TaskFormProps) => {
@@ -12,7 +12,7 @@ const TaskForm = ({ onAddTask }: TaskFormProps) => {
   const [category, setCategory] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     if (!title.trim()) {
@@ -20,12 +20,16 @@ const TaskForm = ({ onAddTask }: TaskFormProps) => {
       return;
     }
 
-    onAddTask({
+    const isCreated = await onAddTask({
       title: title.trim(),
       description: description.trim(),
       category: category.trim() || 'General',
       priority,
     });
+
+    if (!isCreated) {
+      return;
+    }
 
     setTitle('');
     setDescription('');

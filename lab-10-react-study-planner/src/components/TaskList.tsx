@@ -6,9 +6,16 @@ interface TaskListProps {
   totalTasksCount: number;
   onToggleTask: (id: number) => void;
   onDeleteTask: (id: number) => void;
+  onSelectTask: (id: number) => void;
 }
 
-const TaskList = ({ tasks, totalTasksCount, onToggleTask, onDeleteTask }: TaskListProps) => {
+const TaskList = ({
+  tasks,
+  totalTasksCount,
+  onToggleTask,
+  onDeleteTask,
+  onSelectTask,
+}: TaskListProps) => {
   if (totalTasksCount === 0) {
     return (
       <div className="rounded-xl border border-dashed border-slate-300 p-8 text-center bg-white/50">
@@ -18,7 +25,6 @@ const TaskList = ({ tasks, totalTasksCount, onToggleTask, onDeleteTask }: TaskLi
     );
   }
 
-  // Умова 2: За поточним фільтром результатів не знайдено
   if (tasks.length === 0) {
     return (
       <div className="rounded-xl border border-slate-200 p-8 text-center bg-white shadow-xs">
@@ -30,7 +36,13 @@ const TaskList = ({ tasks, totalTasksCount, onToggleTask, onDeleteTask }: TaskLi
   return (
     <div className="space-y-3">
       {tasks.map((task) => (
-        <TaskItem key={task.id} task={task} onToggle={onToggleTask} onDelete={onDeleteTask} />
+        <TaskItem
+          key={task.id}
+          task={task}
+          onToggle={onToggleTask}
+          onDelete={onDeleteTask}
+          onSelect={onSelectTask}
+        />
       ))}
     </div>
   );
